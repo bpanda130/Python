@@ -1,46 +1,27 @@
 import requests
 import csv
 import logging as logger
-import datetime
-import sys
+import json
 
-from EXERCISES.APIGetCSVWrite.constants import *
+from EXERCISES.APIGetCSVWrite.constants import LOGS_DIR, OUTPUTS_DIR, CONF_DIR
 logger.basicConfig(filename=LOGS_DIR + 'API.log', level=logger.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
-# class log(object):
-#     def __init__(self, func):
-#         self.func = func
+# def log_args(func):
 #
-#     def log_args(self, *args, **kwargs):
-#         log_path = os.path.join(LOGS_DIR, 'API.log')
-#         print("\n Log file Location : " + log_path)
-#         argnames = args[0]
-#         print(argnames)
-#         start = datetime.datetime.now()
-#         Tem = self.func(*args)
-#         FunName = self.func.__name__
-#         end = datetime.datetime.now()
+#     """This decorator dumps out the arguments passed to a function before calling it"""
 #
-#         message = """
-#                     Function        : {}
-#                     Execustion Time : {}
-#                     Memory          : {} Bytes
-#                     Date            : {}
-#                     """.format(FunName,
-#                                #argnames,
-#                                end-start,
-#                                sys.getsizeof(self.func),
-#                                start)
-#         logger.info(message)
-#         print(message)
-#         return Tem
+#     def echo_func_args():
+#         inspect.getfullargspec(func)
+#         return echo_func_args
 
 
 class APIHelper():
 
     def __init__(self, url):
         self.url = url
-        self.columns = ["name", "height", "gender"]
+        with open(CONF_DIR + 'api.conf', 'r') as conf:
+            self.columns = json.load(conf)["result_keys"]
+
 
     def star_wars_characters(self):
         api_response = requests.get(self.url)
@@ -52,13 +33,14 @@ class APIHelper():
         else:
             return api_response.reason
 
-    #@log
+    # @log_args
     def append_to_file(self, file_name):
-        file_path = os.path.join(OUTPUTS_DIR, file_name)
-        with open(file_path, "w") as file_w:
+
+        with open(OUTPUTS_DIR + file_name, "w") as file_w:
             csv_file = csv.writer(file_w, delimiter=',')
+            # write the header for the csv file - only once
             csv_file.writerow([x.title() for x in self.columns])
             for row in self.star_wars_characters():
                 csv_file.writerow(row)
-        logger.info("Finished writing to file : {}".format(file_path))
+        logger.info("Finished writing to file : {}".format(file_name))
         file_w.close()
