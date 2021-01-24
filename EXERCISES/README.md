@@ -1,11 +1,13 @@
 # Isentia Exercises
 
  _Project Description:_
+ 
     - In this project we have Tested the API response code and content.
     - Verifying the Response is in List.
     - Saving the all the required Response in output file.
     
-  _Project Component:_
+  _Project Component:
+  
     - Test Methods      : /tests/test_APIResponse.py
     - Helper Function   : /src/APIHelper.py
     - Config            : /constants.py
@@ -17,6 +19,7 @@
   _External Library:_ None
   
   _Execution:_ 
+  
   execute from test_APIResponse.TestAPI Module.
     
     
